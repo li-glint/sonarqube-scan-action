@@ -12,6 +12,11 @@ LABEL version="1.0.0" \
 # Set up local envs in order to allow for special chars (non-asci) in filenames.
 ENV LC_ALL="C.UTF-8"
 
+# Copy Glint root CA cert for connecting to sonarqube server and validation of SSL
+COPY lib/tls-ca.pem /tmp/tls-ca.pem
+RUN keytool -import -v -trustcacerts -alias glint -file /tmp/tls-ca.pem \
+      -keystore ${JAVA_HOME}/lib/security/cacerts -noprompt -storepass changeit
+
 # https://help.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
 USER root
 
